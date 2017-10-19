@@ -1161,3 +1161,5 @@ public class SortedList<E> implements List<E> {
     }
 
 }  // end SortedList definition
+
+// ------------------------------------------------------------------------

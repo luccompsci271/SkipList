@@ -1,44 +1,39 @@
-import java.util.ArrayList;
 
+/** This is the node implementation which is used by the list */
 public class Node<E> {
-    private static final double P = 0.5;
-    private static final int MAX_LEVELS = 30;
 
     private E data; // value stored in this element
-    private ArrayList<Node<E>> nextNodes; // ref to next
+    private Node<E> nextElement; // ref to next
 
-    public Node(E v)
-    {
-        int height = 1;
-        while (Math.random() < P && height < MAX_LEVELS)
-        {
-            height++;
-        }
-        nextNodes = new ArrayList<Node<E>>(height);
+    public Node(E v, Node<E> next) {
+        // pre: v is a value, next is a reference to remainder of list
+        // post: an element is constructed as the new head of list
+        data = v;
+        nextElement = next;
     }
 
-    public int levels()
-    {
-        return nextNodes.size() - 1;
+    public Node(E v) {
+        // post: constructs a new tail of a list with value v
+        this(v,null);
     }
 
-    public Node<E> next(int level)
-    {
-        return nextNodes.get(level);
+    public Node<E> next() {
+        // post: returns reference to next value in list
+        return nextElement;
     }
 
-    public void setNext(int level, Node<E> next)
-    {
-        nextNodes.set(level, next);
+    public void setNext(Node<E> next)  {
+        // post: sets reference to new next value
+        nextElement = next;
     }
 
-    public E value()
-    {
+    public E value() {
+        // post: returns value associated with this element
         return data;
     }
 
-    public void setValue(E value)
-    {
+    public void setValue(E value) {
+        // post: sets value associated with this element
         data = value;
     }
 }
