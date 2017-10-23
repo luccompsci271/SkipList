@@ -64,8 +64,7 @@ public class SkipList<E> implements List<E>
 
     public List<E> subList(int fromIndex, int toIndex)
     {
-        List<E> sub = new SkipList<>();
-        return sub;
+        throw new IndexOutOfBoundsException();
     }
 
     // Group 3
