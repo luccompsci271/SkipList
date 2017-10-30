@@ -229,117 +229,24 @@ public class SkipList<E> implements List<E>
 
 
     // Group 2
-    public boolean contains(Object o) // Code by Lucas, LogN version coming. AJZ: NOW HERE
+    public boolean contains(Object o)
     {
-        Comparable<E> co = (Comparable<E>) o; //AJZ: set up comparison ability
-        if (heads == null) return false; //AJZ: return false if no heads pointers
-        int lvl = heads.size() - 1; //AJZ: start level at max
-        while (heads.get(lvl) == null) //AJZ: get level to where the highest node is
-        {
-            lvl--;
-        }
-        Node<E> temp = heads.get(lvl); //AJZ: set temp to that node
-        while (lvl >= 0)
-        {
-            if (temp != null) //AJZ: if temp actually exists
-            {
-                if (co.compareTo(temp.value()) == 0)
-                { //AJZ: o is equal to temp
-                    return true;
-                }
-                if (lvl == 0 && (temp.next(0) == null || co.compareTo(temp.value()) < 0))
-                { //AJZ: couldn't find o
-                    return false;
-                }  
-            }  
-            if (temp.next(lvl) == null)
-            { //AJZ: next node at this level is numm, go down a level
-                lvl--;   
-            }
-            else if (co.compareTo(temp.next(lvl).value()) < 0)
-            { //AJZ: o is less than temp, go down a level
-                lvl--;
-            }
-            else if (co.compareTo(temp.next(lvl).value()) >= 0)
-            { //AJZ: o is more than temp, jump to this node
-                temp = temp.next(lvl);
-            }
-        }
-        return false; //AJZ: if level dips below 0 is the search, you didn't find it
-    }
-
-    public boolean testcontains(boolean verbose)
-    {
-        SkipList<Integer> list = new SkipList<Integer>();
-        //AJZ: I added a bigger test list here, 
-        list.add(1);
-        list.add(3);
-        list.add(8);
-        list.add(12);
-        list.add(9);
-        list.add(6);
-        list.add(2);
-        list.add(24);
-        list.add(18);
-        list.add(13);
-        //AJZ: As well as this test case
-        return (!list.contains(14) && list.contains(13));
+        return false;
     }
 
     public boolean containsAll(Collection c)
-    { //AJZ: Paul did this wrong, I fixed it. It's pretty straightforward.
-        for (Object o: c)
-        {
-            if (!contains(o))
-            {
-                return false;
-            }
-        }
-        //AJZ: if nothing ever returned false, return true
-        return true;
+    { 
+        return false;
     }
-
-    // Test written by Lucas, it passes with LinkedList, fails with SkipList
-    //AJZ: I fixed this too
-    public boolean testcontainsAll(boolean verbose)
-    {
-        SkipList<Integer> test = new SkipList<Integer>();
-        test.add(1);
-        test.add(2);
-        test.add(3);
-
-        List<Integer> comparison = new LinkedList<Integer>();
-        comparison.add(1);
-        comparison.add(2);
-        comparison.add(3);
-
-        return (test.containsAll(comparison));
-    }
-
-/* ########################################################################### */
-/* ######################## AJZ: MY EDITS END HERE ########################### */
-/* ########################################################################### */
 
     public boolean equals(Object o)
     {
-        if (heads.equals(o) == false)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return false;
     }
 
     public List<E> subList(int fromIndex, int toIndex)
     {
         List<E> sub = new SkipList<>();
-
-        for(int i = fromIndex; i < toIndex; i++)
-        {
-            sub.add(this.get(i));
-        }
         return sub;
     }
 
