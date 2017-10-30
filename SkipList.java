@@ -127,7 +127,7 @@ public class SkipList<E> implements List<E>
     public boolean contains(Object o) // by Lucas Perez and Nat Kanyarak
     {
         @SuppressWarnings("unchecked") // Supressing type checks
-        Comparable<E> co = (Comparable<E>) o; // set up comparison ability
+        Comparable<E> co = (Comparable<E>) o; // Casting Comparable to the Object, so compareTo magic can happen, 10 points to Gryffindor!
         if (heads == null) return false; // return false if no heads pointers
         int lvl = heads.size() - 1; // start level at max
         while (heads.get(lvl) == null) // get level to where the highest node is
@@ -139,29 +139,25 @@ public class SkipList<E> implements List<E>
         {
             if (temp != null) // if it's not null, it's filled, so...
             {
-                if (co.compareTo(temp.value()) == 0)
-                { // o is equal to temp
+                if (co.compareTo(temp.value()) == 0)  // o is equal to temp
                     return true;
-                }
-                if (lvl == 0 && (temp.next(0) == null || co.compareTo(temp.value()) < 0))
-                { // couldn't find o
+                if (lvl == 0 && (temp.next(0) == null || co.compareTo(temp.value()) < 0))  // couldn't find o
                     return false;
-                }
             }
-            if (temp.next(lvl) == null)
-            { // next node at this level is null, go down a level
+            if (temp.next(lvl) == null) // next node at this level is null, go down a level
+            {
                 lvl--;
             }
-            else if (co.compareTo(temp.next(lvl).value()) < 0)
-            { // o is less than temp, go down a level
+            else if (co.compareTo(temp.next(lvl).value()) < 0) // o is less than temp, go down a level
+            {
                 lvl--;
             }
-            else if (co.compareTo(temp.next(lvl).value()) >= 0)
-            { // o is more than temp, jump to this node
+            else if (co.compareTo(temp.next(lvl).value()) >= 0) // o is more than temp, jump to this node
+            {
                 temp = temp.next(lvl);
             }
         }
-        return false; // if level dips below 0 is the search, you didn't find it
+        return false; // if leve goes below 0, well son, it's not there.
     }
 
     public boolean testcontains(boolean verbose)
@@ -188,9 +184,7 @@ public class SkipList<E> implements List<E>
         for (Object o: c)
         {
             if (!contains(o))
-            {
                 return false;
-            }
         }
         // if nothing ever returned false, return true
         return true;
@@ -266,15 +260,9 @@ public class SkipList<E> implements List<E>
 
         ArrayList<String> testSubList = new ArrayList<String>(testList.subList(1, 5));
         if (testList.containsAll(testSubList))
-        {
-            System.out.println("true");
             return true;
-        }
         else
-        {
-            System.out.println("false");
             return false;
-        }
     }
 
     // Group 3
