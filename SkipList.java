@@ -119,7 +119,12 @@ public class SkipList<E> implements List<E>
     }
 
     // Group 2
-    public boolean contains(Object o) // Code by Lucas Perez, and Nat
+
+    /*
+        Legend says that they struggled against the Evil, but they prevailed
+        helped by a hero who is THE Absolute Madman
+    */
+    public boolean contains(Object o) // by Lucas Perez and Nat Kanyarak
     {
         @SuppressWarnings("unchecked") // Supressing type checks
         Comparable<E> co = (Comparable<E>) o; // set up comparison ability
@@ -160,7 +165,7 @@ public class SkipList<E> implements List<E>
     }
 
     public boolean testcontains(boolean verbose)
-    {
+    { // by Lucas Perez, THE Absolute Madman
         List<Integer> list = new SkipList<Integer>();
 
         list.add(1);
@@ -179,7 +184,7 @@ public class SkipList<E> implements List<E>
     }
 
     public boolean containsAll(Collection c)
-    { // by Paul Risteca, and Lucas Perez
+    { // by Paul Risteca, and logical fixes by Lucas Perez
         for (Object o: c)
         {
             if (!contains(o))
@@ -207,12 +212,42 @@ public class SkipList<E> implements List<E>
     }
 
     public boolean equals(Object o)
-    {
-        return false;
+    { // by Lucas Perez and by Janeen Soria
+        if (o == this)
+            return true;
+
+        if (!(o instanceof Set))
+            return false;
+
+        Collection<?> c = (Collection<?>) o;
+
+        if (c.size() != size())
+            return false;
+
+        try {
+            return containsAll(c);
+        } catch (ClassCastException unused)   {
+            return false;
+        } catch (NullPointerException unused) {
+            return false;
+        }
+    }
+
+    public boolean testequals(boolean verbose)
+    { // by Lucas Perez, THE Absolute Madman
+        List<Integer> list = new LinkedList<Integer>();
+        List<Integer> comp = new LinkedList<Integer>();
+        list.add(1);
+        list.add(32);
+        list.add(99);
+        comp.add(1);
+        comp.add(32);
+        comp.add(99);
+        return list.equals(comp);
     }
 
     public List<E> subList(int fromIndex, int toIndex)
-    { // by Ryan Schubert, variable fixes by Lucas Perez
+    { // by Ryan Schubert, with a little help by Lucas Perez
         List<E> sub = new SkipList<E>(); // we need to return a List of a generic type
 
         /*
