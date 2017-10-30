@@ -1,9 +1,8 @@
+// https://docs.oracle.com/javase/8/docs/api/java/util/List.html
 
-
-   import javax.xml.soap.Node;
 import java.util.*;
 import java.lang.reflect.*;
-import java.util.List;
+import java.util.ArrayList;
 
 public class SkipList<E> implements List<E>
 {
@@ -47,14 +46,14 @@ public class SkipList<E> implements List<E>
                 } else { // traveling on the level
                     finger = heads.get(lvl);
                     while ( (finger.next(lvl) != null)
-                            && ce.compareTo(finger.next(lvl).value()) > 0 ) {
+                        && ce.compareTo(finger.next(lvl).value()) > 0 ) {
                         finger = finger.next(lvl);
                     }
                     addPath.set(lvl, finger);
                 }
             } else { // finger is at a node
                 while ( (finger.next(lvl) != null)
-                        && ce.compareTo(finger.next(lvl).value()) > 0 ) {
+                    && ce.compareTo(finger.next(lvl).value()) > 0 ) {
                     finger = finger.next(lvl);
                 }
                 addPath.set(lvl,finger);
@@ -78,7 +77,7 @@ public class SkipList<E> implements List<E>
 
     // initial version written by Dr. Albert
     public boolean testAdd(boolean verbose)  {
-        //Written by
+        //Written by Clair
         //creates a new SkipList called testList
         List<Integer> testList = new SkipList<Integer>();
 
@@ -99,7 +98,7 @@ public class SkipList<E> implements List<E>
         //return compareList.equals(testList);
     }
 
-// Written by Clair, Sophia, Sofia, Kelsey
+    // Written by Clair, Sophia, Sofia, Kelsey
     public boolean addAll(Collection<? extends E> c) {
 
         boolean isDifferent = false;
@@ -135,9 +134,10 @@ public class SkipList<E> implements List<E>
 
 
     }
-    // Written by  Karson, Sofia, and Maribel
+    // Written by  Karson
     public int indexOf(Object number) {
         // Written by
+        int index = 0;
         if (isEmpty()) {
             return -1;
         }
@@ -159,7 +159,7 @@ public class SkipList<E> implements List<E>
             return index;
 
         }
-       else{
+        else{
             return -1;
         }
     }
@@ -194,19 +194,19 @@ public class SkipList<E> implements List<E>
             return -1;
         }
         else {
-            Node<E> temp = heads;
+            Node<E> temp = heads.get(0);
             for (int i = 0; i < index; i++) {
-                temp = temp.next();
+                temp = temp.next(0);
             }
-            while (temp.next().value() == m) {
-                temp = temp.next();
+            while (temp.next(0).value() == m) {
+                temp = temp.next(0);
                 index++;
             } return index;
         }
     }
 
     public static boolean testlastIndexOf() {
-        // Written by Karson, Sofia and Maribel
+        // Written by Sofia and Maribel
         List<Integer> testList = new SkipList<Integer>();
         int testValue3 = 7;
         testList.add(testValue3);
@@ -227,26 +227,120 @@ public class SkipList<E> implements List<E>
     }
 
 
+
     // Group 2
-    public boolean contains(Object o)
+    public boolean contains(Object o) // Code by Lucas, LogN version coming. AJZ: NOW HERE
     {
-        return true;
+        Comparable<E> co = (Comparable<E>) o; //AJZ: set up comparison ability
+        if (heads == null) return false; //AJZ: return false if no heads pointers
+        int lvl = heads.size() - 1; //AJZ: start level at max
+        while (heads.get(lvl) == null) //AJZ: get level to where the highest node is
+        {
+            lvl--;
+        }
+        Node<E> temp = heads.get(lvl); //AJZ: set temp to that node
+        while (lvl >= 0)
+        {
+            if (temp != null) //AJZ: if temp actually exists
+            {
+                if (co.compareTo(temp.value()) == 0)
+                { //AJZ: o is equal to temp
+                    return true;
+                }
+                if (lvl == 0 && (temp.next(0) == null || co.compareTo(temp.value()) < 0))
+                { //AJZ: couldn't find o
+                    return false;
+                }  
+            }  
+            if (temp.next(lvl) == null)
+            { //AJZ: next node at this level is numm, go down a level
+                lvl--;   
+            }
+            else if (co.compareTo(temp.next(lvl).value()) < 0)
+            { //AJZ: o is less than temp, go down a level
+                lvl--;
+            }
+            else if (co.compareTo(temp.next(lvl).value()) >= 0)
+            { //AJZ: o is more than temp, jump to this node
+                temp = temp.next(lvl);
+            }
+        }
+        return false; //AJZ: if level dips below 0 is the search, you didn't find it
+    }
+
+    public boolean testcontains(boolean verbose)
+    {
+        SkipList<Integer> list = new SkipList<Integer>();
+        //AJZ: I added a bigger test list here, 
+        list.add(1);
+        list.add(3);
+        list.add(8);
+        list.add(12);
+        list.add(9);
+        list.add(6);
+        list.add(2);
+        list.add(24);
+        list.add(18);
+        list.add(13);
+        //AJZ: As well as this test case
+        return (!list.contains(14) && list.contains(13));
     }
 
     public boolean containsAll(Collection c)
-    {
+    { //AJZ: Paul did this wrong, I fixed it. It's pretty straightforward.
+        for (Object o: c)
+        {
+            if (!contains(o))
+            {
+                return false;
+            }
+        }
+        //AJZ: if nothing ever returned false, return true
         return true;
     }
+
+    // Test written by Lucas, it passes with LinkedList, fails with SkipList
+    //AJZ: I fixed this too
+    public boolean testcontainsAll(boolean verbose)
+    {
+        SkipList<Integer> test = new SkipList<Integer>();
+        test.add(1);
+        test.add(2);
+        test.add(3);
+
+        List<Integer> comparison = new LinkedList<Integer>();
+        comparison.add(1);
+        comparison.add(2);
+        comparison.add(3);
+
+        return (test.containsAll(comparison));
+    }
+
+/* ########################################################################### */
+/* ######################## AJZ: MY EDITS END HERE ########################### */
+/* ########################################################################### */
 
     public boolean equals(Object o)
     {
-        return true;
+        if (heads.equals(o) == false)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
-
 
     public List<E> subList(int fromIndex, int toIndex)
     {
-        throw new IndexOutOfBoundsException();
+        List<E> sub = new SkipList<>();
+
+        for(int i = fromIndex; i < toIndex; i++)
+        {
+            sub.add(this.get(i));
+        }
+        return sub;
     }
 
     // Group 3
@@ -293,7 +387,9 @@ public class SkipList<E> implements List<E>
     // Group 4
     public Iterator<E> iterator()
     {
-        throw new IndexOutOfBoundsException();
+        // throw new IndexOutOfBoundsException();
+        Iterator<E> e = iterator();
+        return e;
     }
 
     public ListIterator<E> listIterator()
@@ -346,7 +442,7 @@ public class SkipList<E> implements List<E>
     }
 
 
-    //-----------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------------
     // functions to get the compiler to agree to implement the list interface
     // these functions don't make sense in a SkipList implementation
     // and they are techincally (optional)
@@ -411,7 +507,7 @@ public class SkipList<E> implements List<E>
                     // this exception happens if the method ran throws an exception during execution
                 } catch (InvocationTargetException e) {
                     System.out.println("EXCEPTION THROWN from: " + methodName);
-                    retobj = new Boolean(false);
+                    retobj = (Object) new Boolean(false);
                 }
 
                 didWork = (Boolean) retobj;
@@ -426,12 +522,9 @@ public class SkipList<E> implements List<E>
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         superTest();
     }
 
-
-
-
-}
-}
+}  // end SkipList definition
