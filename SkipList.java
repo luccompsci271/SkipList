@@ -213,41 +213,32 @@ public class SkipList<E> implements List<E>
 
     public boolean equals(Object o)
     { // by Lucas Perez and by Janeen Soria
-        if (o == this)
+        if (o == this) // seems like an obvious check, but hey now.
             return true;
 
-        if (!(o instanceof Set))
+        Collection<?> c = (Collection<?>) o; // cast o to a generic Collection, not all objects are one, right?
+
+        if (c.size() != size()) // why check everything if the size is different? Gotta go fast.
             return false;
 
-        Collection<?> c = (Collection<?>) o;
-
-        if (c.size() != size())
-            return false;
-
-        try {
-            return containsAll(c);
-        } catch (ClassCastException unused)   {
-            return false;
-        } catch (NullPointerException unused) {
-            return false;
-        }
+        return containsAll(c);
     }
 
     public boolean testequals(boolean verbose)
     { // by Lucas Perez, THE Absolute Madman
         List<Integer> list = new LinkedList<Integer>();
         List<Integer> comp = new LinkedList<Integer>();
-        list.add(1);
+        list.add(null);
         list.add(32);
         list.add(99);
-        comp.add(1);
+        comp.add(null);
         comp.add(32);
         comp.add(99);
         return list.equals(comp);
     }
 
     public List<E> subList(int fromIndex, int toIndex)
-    { // by Ryan Schubert, with a little help by Lucas Perez
+    { // by Ryan Schubert, with a tiny help by Lucas Perez
         List<E> sub = new SkipList<E>(); // we need to return a List of a generic type
 
         /*
