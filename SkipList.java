@@ -239,7 +239,7 @@ public class SkipList<E> implements List<E>
         }
     }  
 
-    public E get(int index) { // Prof. Albert & Edited by Maya Gocal and Mikey Cabrera
+    public E get(int index) { // Prof. Albert & Edited by Maya Gocal, Mikey Cabrera & Erika Oller
         //sets pointer equal to head (start of the collection)
         Node<E> pointer = heads.get(0);
         
