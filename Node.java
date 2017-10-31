@@ -9,15 +9,19 @@ public class Node<E> {
     private ArrayList<Node<E>> nextNodes; // ref to next
 
     public Node(E v) {
+        data = v;
         int height = 1;
         while (Math.random() < P && height < MAX_LEVELS) {
             height++;
         }
         nextNodes = new ArrayList<Node<E>>(height);
+        for (int i = 0; i < height; i++) {
+            nextNodes.add(i,null);
+        }
     }
 
     public int levels() {
-        return nextNodes.size() - 1;
+        return nextNodes.size();
     }
 
     public Node<E> next(int level) {

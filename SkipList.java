@@ -85,11 +85,6 @@ public class SkipList<E> implements List<E>
         testList.add(10);
         testList.add(7);
 
-        //System.out.println(testList.get(0));
-        //System.out.println(testList.get(1));
-        //System.out.println(testList.get(2));
-        //System.out.println(testList.get(3));
-
         return (
             (testList.get(0) == 4) &&
             (testList.get(1) == 7) &&
@@ -100,6 +95,7 @@ public class SkipList<E> implements List<E>
 
         // return compareList.equals(testList);
     }
+
 
     public boolean addAll(Collection c)
     {
@@ -444,8 +440,9 @@ public class SkipList<E> implements List<E>
         }
     }
 
-    public static void main(String[] args)
-    {
+
+    public static void main(String[] args) {
+
         superTest();
     }
 
