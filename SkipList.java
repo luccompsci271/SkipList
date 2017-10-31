@@ -77,6 +77,7 @@ public class SkipList<E> implements List<E>
 
     // initial version written by Dr. Albert
     public boolean testAdd(boolean verbose)  {
+        //Written by Clair
         //creates a new SkipList called testList
         List<Integer> testList = new SkipList<Integer>();
 
@@ -85,33 +86,143 @@ public class SkipList<E> implements List<E>
         testList.add(10);
         testList.add(7);
 
+
         return (
-            (testList.get(0) == 4) &&
-            (testList.get(1) == 7) &&
-            (testList.get(2) == 7) &&
-            (testList.get(3) == 10) &&
-            (testList.size() == 4)
-            );
+                (testList.get(0) == 4) &&
+                        (testList.get(1) == 7) &&
+                        (testList.get(2) == 7) &&
+                        (testList.get(3) == 10) &&
+                        (testList.size() == 4)
+        );
 
-        // return compareList.equals(testList);
+        //return compareList.equals(testList);
     }
 
+    // Written by Clair, Sophia, Sofia, Kelsey
+    public boolean addAll(Collection<? extends E> c) {
 
-    public boolean addAll(Collection c)
-    {
-        return true;
+        boolean isDifferent = false;
+        for (E e:c)
+            if (add(e)) {
+                isDifferent = true;
+            }
+        return isDifferent;
+    }
+    //
+    public boolean testaddAll(boolean verbose) {
+        // Written by Karson, Sofia and Maribel
+        List<Integer> testList = new SkipList<Integer>();
+
+        int testValue1 = 5;
+        testList.add(7);
+        testList.add(4);
+        testList.add(10);
+        testList.add(7);
+        testList.add(testValue1);
+
+        if ((testList.get(0) == 4) && (testList.get(5)==1)&&
+                (testList.get(2) == 7) &&
+                (testList.get(3) == 7) &&
+                (testList.get(4) == 10) &&
+                (testList.size() == 5)) {
+            System.out.println( testValue1  + "has been placed in the correct index of the SkipList");
+            return true;
+
+        }
+        else
+            return false;
+
+
     }
 
-    public int indexOf(Object o)
-    {
+    // Written by  Karson
+    public int indexOf(Object number) {
+        // Written by
         int index = 0;
-        return index;
+        if (isEmpty()) {
+            return -1;
+        }
+        Node<E> temp = heads.get(heads.size() - 1);
+        int i = 0;
+        boolean flag = false;
+        temp = heads.get(heads.size() - 1);
+
+        while (temp.next(temp.levels() - 1) != null) {
+            temp = temp.next(temp.levels() - 1);
+            if (temp.value() == number) {
+                flag = true;
+                break;
+
+            }
+            index++;
+        }
+        if (flag){
+            return index;
+
+        }
+        else{
+            return -1;
+        }
     }
 
-    public int lastIndexOf(Object o)
-    {
-        int index = 0;
-        return index;
+
+    public static boolean testindexOf(){
+        // Written by Karson, Sofia and Maribel
+        List<Integer> testList = new SkipList<Integer>();
+        int testValue2 = 10;
+        int assumedIndex = 3;
+        testList.add(7);
+        testList.add(4);
+        testList.add(testValue2);
+        testList.add(7);
+
+        if (assumedIndex == testList.indexOf(testValue2)){
+            System.out.println(testValue2 + " is located at the index of " + assumedIndex);
+            return true;
+
+        }
+        else {
+            return false;
+        }
+    }
+    // Written by Clair, Sophia, Sofia, Kelsey
+    public int lastIndexOf(Object m) {
+
+        int index = indexOf(m);
+        if (index == -1) {
+            return -1;
+        }
+        else {
+            Node<E> temp = heads.get(0);
+            for (int i = 0; i < index; i++) {
+                temp = temp.next(0);
+            }
+            while (temp.next(0).value() == m) {
+                temp = temp.next(0);
+                index++;
+            } return index;
+        }
+    }
+
+    public static boolean testlastIndexOf() {
+        // Written by Sofia and Maribel
+        List<Integer> testList = new SkipList<Integer>();
+        int testValue3 = 7;
+        testList.add(testValue3);
+        testList.add(4);
+        testList.add(10);
+        testList.add(testValue3);
+
+
+        int assumedIndex = 2;
+        if (assumedIndex == testList.lastIndexOf(testValue3)){
+            System.out.println( testValue3 + " is located in the SkipList at two separate indexes, its last index is " + assumedIndex);
+            return true;
+
+        }
+        else {
+            return false;
+        }
     }
 
     // Group 2
@@ -229,13 +340,18 @@ public class SkipList<E> implements List<E>
 
     public List<E> subList(int fromIndex, int toIndex)
     { // by Ryan Schubert, with a tiny help by Lucas Perez
-        List<E> sub = new SkipList<E>(); // we need to return a List of a generic type
+        // we need to return a List of a generic type
+        if (fromIndex < 0 || toIndex > this.size())
+        {
+          throw new IndexOutOfBoundsException();
+        }
 
+        List<E> sub = new SkipList<E>();
         /*
             start at fromIndex, iterate until given index toIndex, add them to
             list created inside this method, return this list.
         */
-        for(int i = fromIndex; i < toIndex; i++)
+        for(int i = fromIndex; i<toIndex; i++)
         {
             sub.add(this.get(i));
         }
@@ -262,27 +378,109 @@ public class SkipList<E> implements List<E>
     }
 
     // Group 3
-    public boolean isEmpty()
-    {
-        return true;
+    public boolean isEmpty() { // Blake Chambliss
+    	if (count == 0){
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
 
-    public int size()
-    {
+    public static boolean testIsEmpty() { // Blake Chambliss
+    	SkipList<Integer> testList = new SkipList<Integer>();
+    	//create new list
+    	boolean newTestList = testList.isEmpty();
+
+    	//should return true since the list is empty
+    	if (newTestList){
+    		return true;
+    	}
+
+    	//add two elements to list so the list is now populated
+    	testList.add(3);
+    	testList.add(4);
+
+    	//checks to see if the testList is has any values. Asks for the opposite. Since the test list is populated, itEmpty() will return false, but since
+    	//we are looking for the opposite, the if-else should return true
+    	if (!testList.isEmpty()){
+    		return true;
+    	} else{
+    		return false;
+    	}
+    }
+
+    public int size() { // Prof. Albert
         return this.count;
     }
 
-    public void clear()
-    {
+    public boolean testSize() { // Maya Gocal
 
+        int testListSize;
+        int randInt;
+
+        Random rand = new Random();
+
+        boolean test;
+
+        // Creates a new list
+        SkipList<Integer> testList = new SkipList<Integer>();
+
+        // Creates a random number between 1 and 15
+        randInt = rand.nextInt(15) + 1;
+
+        // Adds random number of 1's to test list
+        for (int i = 0; i < randInt; i++) {
+            testList.add(1);
+        }
+
+        // Find list size according to .size() method
+        testListSize = testList.size();
+
+        // Compare result
+        if(testListSize == randInt){
+            test = true;
+        } else {
+            test = false;
+        }
+        return test;
     }
 
-    // currently a bad, O(n) get function by Dr. Albert. Fix to be O(log n)
-    public E get(int index) {
+   public void clear() { // Erika Oller & Spencer Johnston //set count to zero
+       count = 0;
+       heads = new ArrayList<Node<E>>(MAX_LEVELS);
+
+       // initialize with null since ArrayLists start empty
+       for (int i = 0; i < MAX_LEVELS; i++) {
+    	   heads.add(i, null);
+       }
+    }
+
+    public static boolean testClear() { // Erika Oller & Spencer Johnston
+    	// creates a test list
+        SkipList<Integer> testList = new SkipList<Integer>();
+
+        // adds some values to the testList
+        testList.add(1);
+        testList.add(2);
+        testList.add(3);
+
+        // removes those values from the testList
+        testList.clear();
+
+        // since clear has been called, the testList should be empty, which is what isEmpty() checks
+        if(testList.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public E get(int index) { // Prof. Albert & Edited by Maya Gocal, Mikey Cabrera & Erika Oller
         //sets pointer equal to head (start of the collection)
         Node<E> pointer = heads.get(0);
+
         /* if the requested index is less than zero, or if the requested index is
-         * greater than the size of collection an exception is thrown and the ouput prints
+         * greater than the size of collection an exception is thrown and the output prints
          * "chosen index is out of bounds"*/
         if ( index < 0 || index >= this.count ) {
             throw new IndexOutOfBoundsException ("chosen index is out of bounds");
@@ -291,23 +489,67 @@ public class SkipList<E> implements List<E>
             for (int i = 0; i < index; i++){
                 pointer = pointer.next(0);
             }
-            /*return the value of the pointer after it has been moved to the derired index in
+            /*return the value of the pointer after it has been moved to the desired index in
              *the collection*/
             return pointer.value();
         }
     }
 
-    public E getQuantile(double quantile) // e.g. 0 = minimum, 0.5 = median, 1 = max
-    {
-        throw new IndexOutOfBoundsException();
+    public static boolean testGet() { // Mikey Cabrera & Spencer Johnston
+    	// creates a testList
+        SkipList<Integer> testList = new SkipList<Integer>();
+
+        // adds the number one to the testList in index 0
+        testList.add(1);
+
+        // returns true if the value at index 0 equals 1
+        if(testList.get(0) == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public E getQuantile(double quantile) { //Spencer Johnston
+        // checks to see if the value is within the acceptable range 0 <= x <= 1
+        if(quantile >= 1 | quantile < 0) {
+            throw new IndexOutOfBoundsException("Quantile is out of range");
+        }
+
+        // typecasts the double into an int and returns the index of the node given the percentage
+        int index = (int)(this.size() * quantile);
+
+        // returns the value at the requested index
+        return this.get(index);
+    }
+
+    public static boolean testGetQuantile() { //Spencer Johnston
+        // Creates a new list
+        SkipList<Integer> testList = new SkipList<Integer>();
+
+        // Prepopulates the list from 0 - 100
+        for(int i = 0; i <= 100; i++) {
+            testList.add(i);
+        }
+
+        // creates a random index from 0-100
+        int randomQuantile = (int)Math.random() * 101;
+
+        // gets the value using the random index
+        int value = testList.getQuantile(randomQuantile);
+
+        // checks to see if the value is equal to the quantile amount since they should be the same
+        if(value == randomQuantile) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Group 4
     public Iterator<E> iterator()
     {
-        // throw new IndexOutOfBoundsException();
-        Iterator<E> e = iterator();
-        return e;
+        throw new IndexOutOfBoundsException();
     }
 
     public ListIterator<E> listIterator()
@@ -440,9 +682,7 @@ public class SkipList<E> implements List<E>
         }
     }
 
-
     public static void main(String[] args) {
-
         superTest();
     }
 
