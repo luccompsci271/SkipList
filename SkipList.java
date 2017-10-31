@@ -229,7 +229,7 @@ public class SkipList<E> implements List<E>
 
     /*
         Legend says that they struggled against the Evil, but they prevailed
-        helped by a hero who is THE Absolute Madman
+        helped by a hero<?> who is THE Absolute Madman
     */
     public boolean contains(Object o) // by Lucas Perez and Nat Kanyarak
     {
@@ -584,17 +584,71 @@ public class SkipList<E> implements List<E>
     }
 
     // Group 6
-    public int hashCode()
+
+	public int hashCode()
     {
-        int hashCode = 0;
+		//Written by Group 6 members Enlil Adam and Hans Johnson.
+        int hashCode = 1;
+		//Starts the finger at the heads
+		Node<E> finger = heads.get(0);
+		//Moves finger over to a node where a value might be stored.
+		finger.next(0);
+		//If the list isn't empty or if finger hasn't reached the end it'll hash the current value and move to the next.
+		while (finger != null)
+        {
+			hashCode = 31*hashCode + (finger == null ? 0 : finger.value().hashCode());
+			finger = finger.next(0);
+		}
         return hashCode;
     }
 
-    public Object[] toArray()
-    {
-        Object[] arr = new Object[0];
-        return arr;
-    }
+	public boolean testHashCode()
+	{
+		List<Integer> testList1 = new SkipList<Integer>();
+		List<Integer> testList2 = new SkipList<Integer>();
+
+		testList1.add(3);
+		testList1.add(4);
+		testList1.add(7);
+
+		testList2.add(3);
+		testList2.add(4);
+		testList2.add(7);
+
+	    return (testList1.hashCode() == testList2.hashCode());
+	}
+
+	public Object[] toArray()
+        {
+            //Thaer Mohomad and Hans Johnson's code
+            Object[] arr = new Object[size()];
+            //Starting position is set equal to the head (null)
+            Node<E> current = null;
+            //loop created that iterates through the values of the list
+            for (int i = 0; i < size(); i++)
+            {
+                //current set to position of head at index, which changes after for loop completes
+                current = heads.get(i);
+                arr[i] = current;
+            }
+            return arr;
+        }
+
+        public static boolean testToArrayObj()
+        {
+            //Hans Johnson & Thaer Mohomad
+            ArrayList<Integer> list1 = new ArrayList<Integer>();
+            list1.add(18);
+            list1.add(12);
+            list1.add(6);
+
+            ArrayList<Integer> list2 = new ArrayList<Integer>();
+            list2.add(18);
+            list2.add(12);
+            list2.add(6);
+
+            return list1.equals(list2);
+        }
 
     public <T> T[] toArray(T[] a)
     {
@@ -603,6 +657,7 @@ public class SkipList<E> implements List<E>
 
 
         //-----------------------------------------------------------------------------------------------
+
     // functions to get the compiler to agree to implement the list interface
     // these functions don't make sense in a SkipList implementation
     // and they are techincally (optional)
