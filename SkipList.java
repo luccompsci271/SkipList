@@ -85,11 +85,6 @@ public class SkipList<E> implements List<E>
         testList.add(10);
         testList.add(7);
 
-        //System.out.println(testList.get(0));
-        //System.out.println(testList.get(1));
-        //System.out.println(testList.get(2));
-        //System.out.println(testList.get(3));
-
         return (
             (testList.get(0) == 4) &&
             (testList.get(1) == 7) &&
@@ -98,7 +93,7 @@ public class SkipList<E> implements List<E>
             (testList.size() == 4)
             );
 
-        //return compareList.equals(testList);
+        // return compareList.equals(testList);
     }
 
 
@@ -120,25 +115,150 @@ public class SkipList<E> implements List<E>
     }
 
     // Group 2
-    public boolean contains(Object o)
+
+    /*
+        Legend says that they struggled against the Evil, but they prevailed
+        helped by a hero who is THE Absolute Madman
+    */
+    public boolean contains(Object o) // by Lucas Perez and Nat Kanyarak
     {
-        return true;
+        @SuppressWarnings("unchecked") // Supressing type checks
+        Comparable<E> co = (Comparable<E>) o; // Casting Comparable to the Object, so compareTo magic can happen, 10 points to Gryffindor!
+        if (heads == null) return false; // return false if no heads pointers
+        int lvl = heads.size() - 1; // start level at max
+        while (heads.get(lvl) == null) // get level to where the highest node is
+        {
+            lvl--;
+        }
+        Node<E> temp = heads.get(lvl); // set temp to that node
+        while (lvl >= 0)
+        {
+            if (temp != null) // if it's not null, it's filled, so...
+            {
+                if (co.compareTo(temp.value()) == 0)  // o is equal to temp
+                    return true;
+                if (lvl == 0 && (temp.next(0) == null || co.compareTo(temp.value()) < 0))  // couldn't find o
+                    return false;
+            }
+            if (temp.next(lvl) == null) // next node at this level is null, go down a level
+            {
+                lvl--;
+            }
+            else if (co.compareTo(temp.next(lvl).value()) < 0) // o is less than temp, go down a level
+            {
+                lvl--;
+            }
+            else if (co.compareTo(temp.next(lvl).value()) >= 0) // o is more than temp, jump to this node
+            {
+                temp = temp.next(lvl);
+            }
+        }
+        return false; // if leve goes below 0, well son, it's not there.
+    }
+
+    public boolean testcontains(boolean verbose)
+    { // by Lucas Perez, THE Absolute Madman
+        List<Integer> list = new SkipList<Integer>();
+
+        list.add(1);
+        list.add(3);
+        list.add(8);
+        list.add(12);
+        list.add(9);
+        list.add(6);
+        list.add(2);
+        list.add(24);
+        list.add(18);
+        list.add(13);
+
+        // if false returns true && if true returns true
+        return (!list.contains(14) && list.contains(13));
     }
 
     public boolean containsAll(Collection c)
-    {
+    { // by Paul Risteca, and logical fixes by Lucas Perez
+        for (Object o: c)
+        {
+            if (!contains(o))
+                return false;
+        }
+        // if nothing ever returned false, return true
         return true;
+    }
+
+    public boolean testcontainsAll(boolean verbose)
+    { // by Lucas Perez
+        List<Integer> test = new LinkedList<Integer>();
+        List<Integer> comp = new LinkedList<Integer>();
+        test.add(1);
+        test.add(2);
+        test.add(3);
+
+        comp.add(1);
+        comp.add(2);
+        comp.add(3);
+
+        return (test.containsAll(comp));
     }
 
     public boolean equals(Object o)
-    {
-        return true;
+    { // by Lucas Perez and by Janeen Soria
+        if (o == this) // seems like an obvious check, but hey now.
+            return true;
+
+        Collection<?> c = (Collection<?>) o; // cast o to a generic Collection, not all objects are one, right?
+
+        if (c.size() != size()) // why check everything if the size is different? Gotta go fast.
+            return false;
+
+        return containsAll(c);
     }
 
+    public boolean testequals(boolean verbose)
+    { // by Lucas Perez, THE Absolute Madman
+        List<Integer> list = new LinkedList<Integer>();
+        List<Integer> comp = new LinkedList<Integer>();
+        list.add(null);
+        list.add(32);
+        list.add(99);
+        comp.add(null);
+        comp.add(32);
+        comp.add(99);
+        return list.equals(comp);
+    }
 
     public List<E> subList(int fromIndex, int toIndex)
+    { // by Ryan Schubert, with a tiny help by Lucas Perez
+        List<E> sub = new SkipList<E>(); // we need to return a List of a generic type
+
+        /*
+            start at fromIndex, iterate until given index toIndex, add them to
+            list created inside this method, return this list.
+        */
+        for(int i = fromIndex; i < toIndex; i++)
+        {
+            sub.add(this.get(i));
+        }
+        return sub;
+    }
+
+    public static boolean testSubList()
     {
-        throw new IndexOutOfBoundsException();
+        // by Ryan Schubert
+        List<String> testList = new ArrayList<String>();
+
+        testList.add("fuck");
+        testList.add("the");
+        testList.add("police");
+        testList.add("from");
+        testList.add("the");
+        testList.add("underground");
+
+        ArrayList<String> testSubList = new ArrayList<String>(testList.subList(1, 5));
+        if (testList.containsAll(testSubList))
+            return true;
+        else
+            return false;
     }
 
     // Group 3
@@ -185,7 +305,9 @@ public class SkipList<E> implements List<E>
     // Group 4
     public Iterator<E> iterator()
     {
-        throw new IndexOutOfBoundsException();
+        // throw new IndexOutOfBoundsException();
+        Iterator<E> e = iterator();
+        return e;
     }
 
     public ListIterator<E> listIterator()
@@ -318,7 +440,9 @@ public class SkipList<E> implements List<E>
         }
     }
 
+
     public static void main(String[] args) {
+
         superTest();
     }
 
