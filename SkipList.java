@@ -584,6 +584,7 @@ public class SkipList<E> implements List<E>
     }
 
     // Group 6
+
 	public int hashCode()
     {
 		//Written by Group 6 members Enlil Adam and Hans Johnson.
@@ -651,45 +652,12 @@ public class SkipList<E> implements List<E>
 
     public <T> T[] toArray(T[] a)
     {
-        // written by Collin Yan and Nguyen Do, minor additions by Lucas Perez
-        @SuppressWarnings("unchecked") // So it won't complain about Unchecked/Unsafe
-        Node <E> pointer = heads.get(0); // start at the head
-        int index = 0; // the current index of the array is 0
-        if (this.size() > a.length) // makes a new ArrayList if the one passed is too big
-       	{
-        	T[] arr = (T[]) new Object[this.size()];
-
-        	for (int i = 0; i < index; i++) // iterates through the SkipList and stores the nodes into the array
-        	{
-        		arr[i] = (T)pointer.value(); // stores the value of the pointer into the ArrayList
-       			pointer = pointer.next(i); // moves pointer to the next node
-    			// after storing the value it moves the pointer to the node after it and then it would store that value and continue iterating through the loop
-       		}
-        }
-        else if (this.size() <= a.length)
-       	{
-        	T[] arr = (T[]) a[this.size()];
-        	return arr;
-       	}
         return a;
     }
 
-    public boolean testToArrayT()
-    {
-        //written by Collin Yan and Nguyen Do, with minor changes and fixes by Lucas Perez
-        @SuppressWarnings("unchecked") // So it won't complain about Unchecked/Unsafe
-        List<Integer> testList = new LinkedList<Integer>();
-        int arr[] = new int[30];
-        for (int i = 0; i <= arr.length; i++) // iterates testList.add to add to the SkipList for the length of the array
-    	{
-    		testList.add(i);
-    	}
 
-    	testList.toArray(); // passes testList through the Array arr
-    	return true;
-    }
+        //-----------------------------------------------------------------------------------------------
 
-    //-----------------------------------------------------------------------------------------------
     // functions to get the compiler to agree to implement the list interface
     // these functions don't make sense in a SkipList implementation
     // and they are techincally (optional)
