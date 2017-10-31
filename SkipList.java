@@ -585,23 +585,22 @@ public class SkipList<E> implements List<E>
 
     // Group 6
 
-	public int hashCode()
+    public int hashCode()
     {
-		//Written by Group 6 members Enlil Adam and Hans Johnson.
-        int hashCode = 1;
-		//Starts the finger at the heads
-		Node<E> finger = heads.get(0);
-		//Moves finger over to a node where a value might be stored.
-		finger.next(0);
-		//If the list isn't empty or if finger hasn't reached the end it'll hash the current value and move to the next.
-		while (finger != null)
-        {
-			hashCode = 31*hashCode + (finger == null ? 0 : finger.value().hashCode());
-			finger = finger.next(0);
-		}
-        return hashCode;
+	//Written by Group 6 members Enlil Adam and Hans Johnson.
+	int hashCode = 1;
+	//Starts the finger at the heads
+	Node<E> finger = heads.get(0);
+	//Moves finger over to a node where a value might be stored.
+	finger.next(0);
+	//If the list isn't empty or if finger hasn't reached the end it'll hash the current value and move to the next.
+	while (finger != null)
+	{
+		hashCode = 31*hashCode + (finger == null ? 0 : finger.value().hashCode());
+		finger = finger.next(0);
+	}
+	return hashCode;
     }
-
 	public boolean testHashCode()
 	{
 		List<Integer> testList1 = new SkipList<Integer>();
@@ -619,37 +618,38 @@ public class SkipList<E> implements List<E>
 	}
 
 	public Object[] toArray()
-        {
-            //Thaer Mohomad and Hans Johnson's code
-            Object[] arr = new Object[size()];
-            //Starting position is set equal to the head (null)
-            Node<E> current = null;
-            //loop created that iterates through the values of the list
-            for (int i = 0; i < size(); i++)
-            {
-                //current set to position of head at index, which changes after for loop completes
-                current = heads.get(i);
-                arr[i] = current;
-            }
-            return arr;
-        }
+	{
+	    //Thaer Mohomad and Hans Johnson's code
+	    Object[] arr = new Object[size()];
+	    //Starting position is set equal to the head (null)
+	    Node<E> current = null;
+	    //loop created that iterates through the values of the list
+	    for (int i = 0; i < size(); i++)
+	    {
+		//current set to position of head at index, which changes after for loop completes
+		current = heads.get(i);
+		arr[i] = current;
+	    }
+	    return arr;
+	}
 
-        public static boolean testToArrayObj()
-        {
-            //Hans Johnson & Thaer Mohomad
-            ArrayList<Integer> list1 = new ArrayList<Integer>();
-            list1.add(18);
-            list1.add(12);
-            list1.add(6);
+	public static boolean testToArrayObj()
+	{
+	    //Hans Johnson & Thaer Mohomad
+	    ArrayList<Integer> list1 = new ArrayList<Integer>();
+	    list1.add(18);
+	    list1.add(12);
+	    list1.add(6);
 
-            ArrayList<Integer> list2 = new ArrayList<Integer>();
-            list2.add(18);
-            list2.add(12);
-            list2.add(6);
+	    ArrayList<Integer> list2 = new ArrayList<Integer>();
+	    list2.add(18);
+	    list2.add(12);
+	    list2.add(6);
 
-            return list1.equals(list2);
-        }
+	    return list1.equals(list2);
+	}
 
+	
     public <T> T[] toArray(T[] a)
     {
         return a;
