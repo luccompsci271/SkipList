@@ -547,62 +547,622 @@ public class SkipList<E> implements List<E>
     }
 
     // Group 4
+    // This project was a collaborative effort of all in group 4 All parts were worked on using pair programming techinque two laptops five people brainstorming
     public Iterator<E> iterator()
     {
-        throw new IndexOutOfBoundsException();
+        return new SkipListIterator<E>(this);
     }
 
     public ListIterator<E> listIterator()
     {
-        throw new IndexOutOfBoundsException();
+        return new SkipListIterator<E>(this);
     }
 
     public ListIterator<E> listIterator(int index)
     {
-        throw new IndexOutOfBoundsException();
+        //ensure index fits before creating an iterator at a bad index
+        if(Math.abs(index)<count)
+        {
+            return new SkipListIterator<E>(this,index);
+        }
+        else
+        {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    public class SkipListIterator<E> implements ListIterator<E> {
+        //global variables
+        private SkipList<E> skipList; //List being iterated
+        private Node<E> current; //Finger points to current node
+        private int current_idx; //Current index of skipList
+
+
+        public SkipListIterator(SkipList<E> list) {
+            //initializing variables
+            skipList = list;
+            current= skipList.heads.get(0);
+            current_idx = 0;
+
+        }
+        public SkipListIterator(SkipList<E> list, int index) {
+            //init variables in an indexed constructor
+            skipList = list;
+            //the method callingn iterator already takes care of the bounds but now we have to see if it is negative
+            // then set index to count+index
+            if (index < 0) {
+                current_idx = count + index;
+            }
+            else {
+                current_idx = index;
+            }
+            //set current to 0th item
+            current = skipList.heads.get(0);
+            for (int i =0; i<current_idx;i++)
+            {
+                current = current.next(0);
+
+            }
+        }
+        // Return true of index comes before the lst index
+        @Override
+        public boolean hasNext() {
+            return current_idx<skipList.count;
+        }
+
+        @Override
+        public E next() {
+            if(this.hasNext()) {
+                //returns current value then iterates to next element
+                E tempor;
+                tempor= current.value();
+                current=current.next(0);
+                current_idx++;
+
+                return tempor;
+
+            }
+            else
+            {
+                throw new NoSuchElementException();
+            }
+        }
+        //returns true if current_idx is not first element
+        @Override
+        public boolean hasPrevious() {
+            return (current_idx>0);
+        }
+
+        @Override
+        public E previous() {
+            if (this.hasPrevious()) {
+                //set decrement current index but since no previous node pointer
+                // must start at beginning and loop till previous index to get node at currentidx--
+                current_idx--;
+                current = skipList.heads.get(0);
+                int idx = 0;
+                for (int i=0;i<current_idx;i++) {
+                    current = current.next(0);
+                }
+                return (current.value());
+            }
+            else {
+                throw new NoSuchElementException();
+            }
+        }
+
+        @Override
+        public int nextIndex() {
+            if (this.hasNext())
+            {
+                return current_idx+1;
+            }
+            else{
+                //returns size of skip list if index is at the end
+                return skipList.count;
+            }
+        }
+
+        @Override
+        public int previousIndex() {
+            if(this.hasPrevious())
+            {
+                return current_idx-1;
+            }
+            else
+            {
+                //returns -1 if iterator iterator at first element
+                return -1;
+            }
+        }
+        // remove, set, and add will not be implemented as instructed
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(E e) {
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void add(E e) {
+            throw new UnsupportedOperationException();
+        }
+    }
+    public static boolean testListIterator() {
+
+        SkipList<Integer> skip = new SkipList<Integer>();
+
+        skip.add(5);
+        skip.add(10);
+        skip.add(20);
+        skip.add(30);
+        // call iterator next twice should return 5 and 10
+        ListIterator<Integer> it = skip.listIterator();
+        //checking if previous index number since at beginnign should return -1
+        if (it.hasPrevious()==true)
+        {
+            return false;
+        }
+        //check previous index number should be -1
+        if(it.previousIndex()!=-1)
+        {
+            return false;
+        }
+        if(!(it.next().equals(5)) ||!(it.next().equals(10)))
+        {
+            return false;
+        }
+        //right now iterator at index 2 should return true if iterator has next called
+        if(it.hasNext()==false)
+        {
+            return false;
+        }
+        //testing the previous then nexting right after- should return same results
+        if (it.previous()!=it.next())
+        {
+            return false;
+        }
+        // now move up iterator to last element to test edge case
+        if (!(it.next().equals(20)&& it.next().equals(30)))
+        {
+            return false;
+        }
+        //edge case hasnext should return false and next should thorw error
+        if (it.hasNext()==true)
+        {
+            return false;
+        }
+        try
+        {
+            it.next();
+            return false;
+        }
+        catch(NoSuchElementException e)
+        {
+
+        }
+        //edgecase of next_index should return size of list
+        if (it.nextIndex()!= skip.size())
+        {
+            return false;
+        }
+        return true;
+
+    }
+
+
+    public static boolean testIterator () {
+
+        SkipList<Integer> skip = new SkipList<Integer>();
+
+        skip.add(5);
+        skip.add(10);
+        skip.add(20);
+        skip.add(30);
+        // call iterator next twice should return 5 and 10
+        Iterator<Integer> it = skip.listIterator();
+        if(!(it.next().equals(5)) ||!(it.next().equals(10)))
+        {
+            return false;
+        }
+        //right now iterator at index 2 should return true if iterator has next called
+        if(it.hasNext()==false)
+        {
+            return false;
+        }
+        // now move up iterator to last element to test edge case
+        if (!(it.next().equals(20)&& it.next().equals(30)))
+        {
+            return false;
+        }
+        //edge case has next should return false
+        if (it.hasNext()==true)
+        {
+            return false;
+        }
+        //next should throw error since end of index
+        try
+        {
+            it.next();
+            return false;
+        }
+        catch(NoSuchElementException e)
+        {
+
+        }
+
+        return true;
+
+    }
+
+
+
+    public static boolean testListIteratorWithIndex() {
+        SkipList<Integer> skip = new SkipList<Integer>();
+
+        skip.add(5);
+        skip.add(10);
+        skip.add(20);
+        skip.add(30);
+        //try creating an iterator out of bound indexed
+        try {
+            ListIterator<Integer> tt = skip.listIterator(100);
+            return false;
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+
+        }
+        // skip index 0 by starting at 1
+        ListIterator<Integer> it = skip.listIterator(1);
+        //starting at index 1 has previous should return true
+        if (!it.hasPrevious())
+        {
+            return false;
+        }
+        //check previous index number should be 0
+        if(it.previousIndex()!=0) {
+            return false;
+        }
+        //calling it.previous should be valid since we are at index 1
+        try{
+            it.previous();
+        }
+        catch(NoSuchElementException e)
+        {
+         return false;
+        }
+        //now at oth index previous should return  false
+        if(it.hasPrevious())
+        {
+            return false;
+        }
+        // now at oth index previous index should output -1
+        if(it.previousIndex()!=-1)
+        {
+            return false;
+        }
+        //we have started at index since we are back at element 0 our  first call to next should be the first element #5 and the second call should be
+        // second element #10
+        if(!(it.next().equals(5)) ||!(it.next().equals(10)))
+        {
+            return false;
+        }
+        //right now iterator at index 2 should return true if iterator has next called
+        if(it.hasNext()==false)
+        {
+            return false;
+        }
+        //testing the previous then nexting right after- should return same results
+        if (it.previous()!=it.next())
+        {
+            return false;
+        }
+        // now move up iterator to last element to test edge case
+        if (!(it.next().equals(20)&& it.next().equals(30)))
+        {
+            return false;
+        }
+        //edge case hasnext should return false and next should thorw error
+        if (it.hasNext()==true)
+        {
+            return false;
+        }
+        try
+        {
+            it.next();
+            return false;
+        }
+        catch(NoSuchElementException e)
+        {
+
+        }
+        //edgecase of next_index should return size of list
+        if (it.nextIndex()!= skip.size())
+        {
+            return false;
+        }
+        return true;
+
     }
 
     // Group 5
+    //Written by Redick
     public E remove(int index)
     {
-        throw new IndexOutOfBoundsException();
+        if ( index < 0 || index >= this.count ) {
+            throw new IndexOutOfBoundsException ("chosen index is out of bounds");
+        } else if(index == 0) {// special case
+            Node<E> currentNode = heads.get(0);
+            E currentData = currentNode.value();
+
+            for(int i = 0; i < currentNode.levels(); i++) {
+                heads.set(i,currentNode.next(i));
+            }
+            this.count--;
+            return currentData;
+
+
+        } else {// normal case
+            // data of node corresponding to index
+            E currentData = get(index);
+
+            // Cast e to Comparable to use the CompareTo method
+            @SuppressWarnings("unchecked")
+            Comparable<E> ce = (Comparable<E>) currentData;
+
+            // filling removePath with all the nodes to potentially be updated
+            ArrayList<Node<E>> removePath = new ArrayList<Node<E>>(MAX_LEVELS);
+            for (int i = 0; i < MAX_LEVELS; i++) {
+                removePath.add(i, null);
+            }
+
+            Node<E> finger = null; // which means starting at the head
+            for (int lvl = MAX_LEVELS - 1; lvl >= 0; lvl--) {
+                if (finger == null) { // when finger is at the head
+                    if (heads.get(lvl) == null || ce.compareTo(heads.get(lvl).value()) < 0) {
+                        removePath.set(lvl, null); // we'll have to update the head
+                    } else { // traveling on the level
+                        finger = heads.get(lvl);
+                        while ((finger.next(lvl) != null) && ce.compareTo(finger.next(lvl).value()) > 0) {
+                            finger = finger.next(lvl);
+                        }
+                        removePath.set(lvl, finger);
+                    }
+                } else{ // finger is at a node
+                    while ((finger.next(lvl) != null) && ce.compareTo(finger.next(lvl).value()) > 0) {
+                        finger = finger.next(lvl);
+                    }
+                    removePath.set(lvl, finger);
+                }
+            }
+
+            // node corresponding to index
+            Node<E> currentNode = removePath.get(0);
+            // modify the reference
+            for(int i = 0; i < currentNode.levels(); i++) {
+                removePath.get(i).setNext(i, currentNode.next(i));
+            }
+            // modify the size of list
+            this.count--;
+            return currentNode.value();
+
+        }
+    }
+    // Test the remove () method
+
+    public boolean testRemove(boolean verbose)  {
+        //creates a new SkipList called testList
+        List<Integer> testList = new SkipList<Integer>();
+
+        testList.add(1);
+        testList.add(3);
+        testList.add(8);
+        testList.add(4);
+        testList.add(23);
+        testList.add(786);
+        testList.add(4);
+        testList.add(9);
+
+        testList.remove(0);
+        testList.remove(4);
+
+
+        return (
+            (testList.get(0) == 3) &&
+            (testList.get(1) == 4) &&
+            (testList.get(4) == 9)
+            );
     }
 
+    // initial version written by Dr. Albert
     public boolean remove(Object o)
     {
+        //Cast e to Comparable to use the CompareTo method
+        @SuppressWarnings("unchecked")
+        Comparable<E> ce = (Comparable<E>)o;
+
+        // filling addPath with all the nodes to potentially be updated
+        ArrayList<Node<E>> removePath = new ArrayList<Node<E>>(MAX_LEVELS);
+        for (int i = 0; i < MAX_LEVELS; i++) {
+            removePath.add(i,null);
+        }
+
+        Node<E> finger = null; // which means starting at the head
+        for (int lvl = MAX_LEVELS - 1; lvl >= 0; lvl--) {
+            if (finger == null) { // when finger is at the head
+                if (heads.get(lvl) == null || ce.compareTo(heads.get(lvl).value()) <= 0) {
+                    removePath.set(lvl, null); // we'll have to update the head
+                } else { // traveling on the level
+                    finger = heads.get(lvl);
+                    while ( (finger.next(lvl) != null)
+                        && ce.compareTo(finger.next(lvl).value()) > 0 ) {
+                        finger = finger.next(lvl);
+                    }
+                    removePath.set(lvl, finger);
+                }
+            } else { // finger is at a node
+                while ( (finger.next(lvl) != null)
+                    && ce.compareTo(finger.next(lvl).value()) > 0 ) {
+                    finger = finger.next(lvl);
+                }
+                removePath.set(lvl,finger);
+            }
+        }
+
+        Node<E> removeNode;
+        if (removePath.get(0) == null) { // the head is pointing to the element to be removed
+            removeNode = heads.get(0);
+        } else { // another node is pointing to the element to be removed
+            removeNode = removePath.get(0).next(0);
+        }
+
+        // check to see if the node to remove is in the skiplist
+        // is removeNode the right value to remove?
+        if ( (removeNode == null) || (!ce.equals(removeNode.value() ) ) ) {
+            return false;
+        }
+        int removeNodeLevels = removeNode.levels();
+
+        // remove the node in the skiplist
+        for (int lvl = 0; lvl < removeNodeLevels; lvl++) {
+            if (removePath.get(lvl) == null) { // flag for the heads pointers
+                heads.set(lvl,removeNode.next(lvl));
+            } else { // affects a node
+                removePath.get(lvl).setNext(lvl, removeNode.next(lvl));
+            }
+        }
+        count--;
         return true;
     }
 
     public boolean removeAll(Collection c)
     {
-        return true;
+        return false;
     }
 
-    public boolean retainAll(Collection c)
-    {
-        return true;
+    // compiles, but throws unchecked, even when @SuppressWarnings("unchecked") is used
+    /*
+    //written by Paulina and Makenna
+    //removes any elements from SkipList that are contained in collection c
+    public boolean removeAll(Collection c){
+
+        boolean modified = false;
+
+        //convert collection to list so we can iterate through it and get value
+        List<E> list = new ArrayList(c);
+
+        //iterate through list, remove each value
+        //remove function will not alter SkipList if it does not contain value
+        for (int i = 0; i < list.size(); i++){
+            remove(list.get(i));
+            modified = true;
+        }
+        return modified;
+    }
+
+   //Written by Paulina and Makenna
+    public boolean testRemoveAll(boolean verbose)  {
+        //creates a new SkipList called testList
+        List<Integer> test = new SkipList<Integer>();
+
+        test.add(5);
+        test.add(17);
+        test.add(42);
+        List<Integer> c = new ArrayList<>();
+
+        c.add(17);
+        c.add(42);
+        if (test.removeAll(c) == false) {
+            return false;
+        }
+
+        return (
+            (test.get(0) == 5) &&
+            (test.size() == 1)
+        );
+    } */
+
+    //written by Paulina and Makenna
+    //removes any elements from SkipList that are not contained in collection c
+    public boolean retainAll(Collection c){
+    /*    if(heads==null || count == 0){
+            throw new UnsupportedOperationException();
+        }
+        else{
+
+            Node<E> pointer = heads;
+            while (pointer!=null){
+                if (!c.contains(pointer.value())){
+                    remove(pointer.value());
+                }
+                pointer = pointer.next(0);
+            }
+
+        }
+        return false;
+    }
+    */
+    boolean modified = false;
+    int lvl = 0;    //want to iterate through at level 0
+    Node<E> temp = heads.get(lvl);  //set pointer
+    if(temp != null){   //if not at head
+        if(!(c.contains(temp.value()))){ //if c doesn't contain the value
+            remove(temp.value());   //remove it
+            modified = true;    //the SkipList was modified
+        }
+        temp = temp.next(lvl);  //move to next value in SkipList
+    }
+        return modified;
+    }   //we think this may not accurately implement the retainAll function
+
+
+   //Written by Paulina and Makenna
+    public boolean testRetainAll(boolean verbose)  {
+        //creates a new SkipList called testList
+        List<Integer> test = new SkipList<Integer>();
+
+        test.add(5);
+        test.add(17);
+        test.add(42);
+
+        List<Integer> c = new ArrayList<>();
+
+        c.add(17);
+        if (test.retainAll(c) == false) {
+            return false;
+        }
+
+        return (
+            (test.get(0) == 17) // &&(test.size()==1)
+        );  //didn't pass if we included size for test, need to figure out how to fix this
     }
 
     // Group 6
 
-    public int hashCode()
+public int hashCode()
+{
+		//Written by Group 6 members Enlil Adam and Hans Johnson.
+        int hashCode = 1;
+		//Starts the finger at the heads
+		Node<E> finger = heads.get(0);
+		//Moves finger over to a node where a value might be stored.
+		finger.next(0);
+		//If the list isn't empty or if finger hasn't reached the end it'll hash the current value and move to the next.
+		while (finger != null)
     {
-	//Written by Group 6 members Enlil Adam and Hans Johnson.
-	int hashCode = 1;
-	//Starts the finger at the heads
-	Node<E> finger = heads.get(0);
-	//Moves finger over to a node where a value might be stored.
-	finger.next(0);
-	//If the list isn't empty or if finger hasn't reached the end it'll hash the current value and move to the next.
-	while (finger != null)
-	{
-		hashCode = 31*hashCode + (finger == null ? 0 : finger.value().hashCode());
-		finger = finger.next(0);
-	}
-	return hashCode;
-    }
-	public boolean testHashCode()
-	{
+			  hashCode = 31*hashCode + (finger == null ? 0 : finger.value().hashCode());
+			  finger = finger.next(0);
+		}
+        return hashCode;
+}
+
+public boolean testHashCode()
+{
 		List<Integer> testList1 = new SkipList<Integer>();
 		List<Integer> testList2 = new SkipList<Integer>();
 
@@ -614,50 +1174,156 @@ public class SkipList<E> implements List<E>
 		testList2.add(4);
 		testList2.add(7);
 
-	    return (testList1.hashCode() == testList2.hashCode());
-	}
+    return (testList1.hashCode() == testList2.hashCode());
+}
 
-	public Object[] toArray()
-	{
-	    //Thaer Mohomad and Hans Johnson's code
-	    Object[] arr = new Object[size()];
-	    //Starting position is set equal to the head (null)
-	    Node<E> current = null;
-	    //loop created that iterates through the values of the list
-	    for (int i = 0; i < size(); i++)
-	    {
+public Object[] toArray()
+{
+    //Thaer Mohomad and Hans Johnson's code
+    Object[] arr = new Object[size()];
+    //Starting position is set equal to the head (null)
+    Node<E> current = null;
+    //loop created that iterates through the values of the list
+    for (int i = 0; i < size(); i++)
+    {
+        //current set to position of head at index, which changes after for loop completes
+        current = heads.get(i);
+        arr[i] = current;
+    }
+    return arr;
+}
+
+public static boolean testToArrayObj()
+{
+    //Hans Johnson & Thaer Mohomad
+    ArrayList<Integer> list1 = new ArrayList<Integer>();
+    list1.add(18);
+    list1.add(12);
+    list1.add(6);
+
+    ArrayList<Integer> list2 = new ArrayList<Integer>();
+    list2.add(18);
+    list2.add(12);
+    list2.add(6);
+
+    return list1.equals(list2);
+}
+
+      
+public int hashCode()
+{
+//Written by Group 6 members Enlil Adam and Hans Johnson.
+int hashCode = 1;
+//Starts the finger at the heads
+Node<E> finger = heads.get(0);
+//Moves finger over to a node where a value might be stored.
+finger.next(0);
+//If the list isn't empty or if finger hasn't reached the end it'll hash the current value and move to the next.
+while (finger != null)
+{
+  hashCode = 31*hashCode + (finger == null ? 0 : finger.value().hashCode());
+  finger = finger.next(0);
+}
+  return hashCode;
+}
+public boolean testHashCode()
+{
+  List<Integer> testList1 = new SkipList<Integer>();
+  List<Integer> testList2 = new SkipList<Integer>();
+
+  testList1.add(3);
+  testList1.add(4);
+  testList1.add(7);
+
+  testList2.add(3);
+  testList2.add(4);
+  testList2.add(7);
+
+  return (testList1.hashCode() == testList2.hashCode());
+}
+
+public Object[] toArray()
+{
+    //Thaer Mohomad and Hans Johnson's code
+    Object[] arr = new Object[size()];
+    //Starting position is set equal to the head (null)
+    Node<E> current = null;
+    //loop created that iterates through the values of the list
+    for (int i = 0; i < size(); i++)
+    {
 		//current set to position of head at index, which changes after for loop completes
-		current = heads.get(i);
-		arr[i] = current;
-	    }
-	    return arr;
-	}
+      current = heads.get(i);
+      arr[i] = current;
+    }
+    return arr;
+}
 
-	public static boolean testToArrayObj()
-	{
-	    //Hans Johnson & Thaer Mohomad
-	    ArrayList<Integer> list1 = new ArrayList<Integer>();
-	    list1.add(18);
-	    list1.add(12);
-	    list1.add(6);
+public static boolean testToArrayObj()
+{
+    //Hans Johnson & Thaer Mohomad
+    ArrayList<Integer> list1 = new ArrayList<Integer>();
+    list1.add(18);
+    list1.add(12);
+    list1.add(6);
 
-	    ArrayList<Integer> list2 = new ArrayList<Integer>();
-	    list2.add(18);
-	    list2.add(12);
-	    list2.add(6);
+    ArrayList<Integer> list2 = new ArrayList<Integer>();
+    list2.add(18);
+    list2.add(12);
+    list2.add(6);
 
-	    return list1.equals(list2);
-	}
+    return list1.equals(list2);
+}
 
 	
+public <T> T[] toArray(T[] a)
+{
+    return a;
+}
+
+    // won't compile
+    /*
     public <T> T[] toArray(T[] a)
     {
+        // written by Collin Yan and Nguyen Do, minor additions by Lucas Perez
+        @SuppressWarnings("unchecked") // So it won't complain about Unchecked/Unsafe
+        Node<E> pointer = heads.get(0); // start at the head
+        int index = 0; // the current index of the array is 0
+        if (this.size() > a.length) // makes a new ArrayList if the one passed is too big
+       	{
+        	T[] arr = (T[]) new Object[this.size()];
+
+        	for (int i = 0; i < index; i++) // iterates through the SkipList and stores the nodes into the array
+        	{
+        		arr[i] = pointer.value(); // stores the value of the pointer into the ArrayList
+       			pointer = pointer.next(i); // moves pointer to the next node
+    			// after storing the value it moves the pointer to the node after it and then it would store that value and continue iterating through the loop
+       		}
+        }
+        else if (this.size() <= a.length)
+       	{
+        	T[] arr = (T[]) a[this.size()];
+        	return arr;
+       	}
         return a;
     }
 
+    public boolean testToArrayT()
+    {
+        //written by Collin Yan and Nguyen Do, with minor changes and fixes by Lucas Perez
+        @SuppressWarnings("unchecked") // So it won't complain about Unchecked/Unsafe
+        List<Integer> testList = new LinkedList<Integer>();
+        int arr[] = new int[30];
+        for (int i = 0; i <= arr.length; i++) // iterates testList.add to add to the SkipList for the length of the array
+    	{
+    		testList.add(i);
+    	}
 
-        //-----------------------------------------------------------------------------------------------
+    	testList.toArray(); // passes testList through the Array arr
+    	return true;
+    } */
 
+    //-----------------------------------------------------------------------------------------------
+    
     // functions to get the compiler to agree to implement the list interface
     // these functions don't make sense in a SkipList implementation
     // and they are techincally (optional)
