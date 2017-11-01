@@ -363,12 +363,12 @@ public class SkipList<E> implements List<E>
         // by Ryan Schubert
         List<String> testList = new ArrayList<String>();
 
-        testList.add("fuck");
-        testList.add("the");
-        testList.add("police");
-        testList.add("from");
-        testList.add("the");
-        testList.add("underground");
+        testList.add("HELP");
+        testList.add("Mark");
+        testList.add("made");
+        testList.add("me");
+        testList.add("do it");
+        testList.add(" :( ");
 
         ArrayList<String> testSubList = new ArrayList<String>(testList.subList(1, 5));
         if (testList.containsAll(testSubList))
